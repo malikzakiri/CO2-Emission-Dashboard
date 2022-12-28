@@ -15,13 +15,13 @@ print('BERHASIL')
 # 2. Create a Dash app instance, THEME
 app = dash.Dash(
     external_stylesheets=[dbc.themes.FLATLY],
-    name='Co2 Emissions'
+    name='CO₂ Emissions'
 )
 
 # -- Navbar & Title Tab --
 app.title='CO₂ Emissions'
 navbar = dbc.NavbarSimple(
-    brand="Mental Health - Suicide Dashboard Analytics",
+    brand="Carbon Dioxide (CO₂) Gas Emission",
     color="primary",
     dark=True,
     brand_style={'fontSize' : '24px'}
@@ -96,7 +96,7 @@ bar_plot = px.bar(
     y='country',
     x='co2_per_capita',
     labels={
-        'country' : 'Country',
+        # 'country' : 'Country',
         'co2_per_capita' : 'CO₂ Per Capita (Tonnes)'
     },
     title='Top 10 Country with The Highest CO₂ Emission Per Capita',
@@ -108,9 +108,10 @@ bar_plot.update_traces(
     "CO₂ Per Capita: %{x:.2f} Tonne"    
 )
 
-# ------------------- PIE ---------------
+# ------------------ Source Line Chart ----------------------
 df_pie2 = df1[['year', 'cement_co2', 'coal_co2', 'flaring_co2', 'gas_co2', 'oil_co2', 'other_industry_co2']]
-df_pie2 = df_pie2[df_pie2['year'] == 2021]
+df_pie2 = df_pie2[df_pie2['year'] >= 1980]
+
 df_pie2 = df_pie2.groupby(by='year').sum().reset_index()
 df_pie2 = pd.melt(df_pie2, id_vars='year')
 change={
@@ -122,14 +123,40 @@ change={
     'other_industry_co2':'Other Industry'
 }
 df_pie2 = df_pie2.replace({'variable':change})
+source_line = px.line(
+    df_pie2, 
+    x="year", 
+    y="value",
+    color='variable',
+    labels={
+        'variable': '',
+        'value' : 'CO₂ Emissions (in Million Tonnes)',
+        'year' : 'Year'
+    },
+    title='The Source of CO₂ Emissions',
+    template='seaborn',
+)
+source_line.update_layout(hovermode="x")
+source_line.update_traces(
+    hovertemplate= 
+    "CO₂: %{y:,.2f}"
+)
+
+# ----------------- PIE PROPORTOPNAL -----------------------
 pie_plot = px.pie(
-    df_pie2,
+    df_pie2[df_pie2['year'] == 2021],
     values='value',
     names='variable',
     color='variable',
     title='CO₂',
-    template='plotly',
-    color_discrete_sequence=px.colors.qualitative.Plotly,
+    color_discrete_map={
+        "Coal": "#b43b1f",
+        "Other Industry": "#f05129",
+        "Flaring": "#ffad4e",
+        "Cement": "#6ed5dc",
+        "Gas": "#3e8dae",
+        "Oil": "#32465f"
+    },
 )
 pie_plot.update_traces(
     hovertemplate= 
@@ -252,13 +279,28 @@ app.layout = html.Div(children=[
             ),
             dbc.Col([
                 html.H4('Analysis by The Source', style={'paddingTop':'10px'}),
-                dcc.Graph(
-                    id='pie_chart',
-                    figure=pie_plot,
-                    style={
-                        'paddingTop':'65px'
-                    }
-                )
+                dbc.Tabs([
+                    dbc.Tab([
+                        dcc.Graph(
+                            id='source_trend',
+                            figure=source_line,
+                            style={
+                                'paddingTop':'32px'
+                            }
+                        )],
+                        label='Trends'
+                    ),
+                    dbc.Tab([
+                        dcc.Graph(
+                            id='pie_plot',
+                            figure=pie_plot,
+                            style={
+                                'paddingTop':'32px'
+                            }
+                        )],
+                        label='Proportion'
+                    ),
+                ]),
             ],
             width=6
             ),
@@ -313,7 +355,7 @@ def update_plot1(bar_sort):
             x='co2_per_capita',
             title='Top 10 Country with The Highest CO₂ Emission Per Capita',
             labels={
-                'country' : 'Country',
+                'country' : ' ',
                 'co2_per_capita' : 'CO₂ Per Capita (Tonnes)'
             },
             template='seaborn'
@@ -325,7 +367,7 @@ def update_plot1(bar_sort):
             x='co2_per_capita',
             title='Top 10 Country with The Lowest CO₂ Emission per Capita',
             labels={
-                'country' : 'Country',
+                'country' : ' ',
                 'co2_per_capita' : 'CO₂ Per Capita (Tonnes)'
             },
             template='seaborn'
