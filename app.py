@@ -99,7 +99,7 @@ bar_plot = px.bar(
         # 'country' : 'Country',
         'co2_per_capita' : 'CO₂ Per Capita (Tonnes)'
     },
-    title='Top 10 Country with The Highest CO₂ Emission Per Capita',
+    title='Top 10 Country with The Highest CO₂ Emission Per Capita 2021',
     
     #template='seaborn'
 )
@@ -133,7 +133,7 @@ source_line = px.line(
         'value' : 'CO₂ Emissions (in Million Tonnes)',
         'year' : 'Year'
     },
-    title='The Source of CO₂ Emissions',
+    title="The Trend of CO₂ Emissions' Source",
     template='seaborn',
 )
 source_line.update_layout(hovermode="x")
@@ -330,7 +330,7 @@ def update_plot1(country_list):
             'year' : 'Year',
             'country' : 'Country'
         },
-        title='CO₂ Trend',
+        title='The Trend of CO₂ Emissions Per Capita Around World',
         template='seaborn'
     )
 
@@ -353,7 +353,7 @@ def update_plot1(bar_sort):
             data_frame=df_bar.tail(10),
             y='country',
             x='co2_per_capita',
-            title='Top 10 Country with The Highest CO₂ Emission Per Capita',
+            title='Top 10 Country with The Highest CO₂ Emission Per Capita 2021',
             labels={
                 'country' : ' ',
                 'co2_per_capita' : 'CO₂ Per Capita (Tonnes)'
@@ -365,7 +365,7 @@ def update_plot1(bar_sort):
             data_frame=df_bar.head(10),
             y='country',
             x='co2_per_capita',
-            title='Top 10 Country with The Lowest CO₂ Emission per Capita',
+            title='Top 10 Country with The Lowest CO₂ Emission Per Capita 2021',
             labels={
                 'country' : ' ',
                 'co2_per_capita' : 'CO₂ Per Capita (Tonnes)'
